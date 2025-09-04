@@ -24,6 +24,12 @@ app.get('/view-code', async (req, res) => {
   }
 });
 
+// Vulnerable endpoint: XSS risk by directly rendering user input
+app.get('/echo', (req, res) => {
+  const userInput = req.query.input || 'No input provided';
+  res.send(`<h1>User said: ${userInput}</h1>`); // Unsafe: No sanitization
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal server error' });
