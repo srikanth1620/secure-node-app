@@ -1,53 +1,26 @@
-name: Semgrep SAST and SCA Scan
 on:
+  workflow_dispatch: {}
+  pull_request: {}
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
-
+    branches:
+    - main
+    - master
+    paths:
+    - .github/workflows/semgrep.yml
+  schedule:
+  # random HH:MM to avoid a load spike on GitHub Actions at 00:00
+  - cron: 52 13 * * *
+name: Semgrep
 jobs:
-  semgrep-scan:
+  semgrep:
+    name: semgrep/ci
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+    container:
+      image: semgrep/semgrep
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - name: Install dependencies
-        run: npm install
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install Semgrep
-        run: |
-          pip install semgrep
-          semgrep --version
-      - name: Verify app.js exists
-        run: |
-          if [ ! -f app.js ]; then
-            echo "Error: app.js not found"
-            exit 1
-          fi
-          ls -l app.js
-      - name: Run Semgrep SAST
-        env:
-          SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: |
-          semgrep --config=p/security app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error
-          cat semgrep-sast-results.json
-      - name: Run Semgrep SCA
-        env:
-          SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: |
-          semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose --error
-          cat semgrep-sca-results.json
-      - name: Upload Semgrep results
-        uses: actions/upload-artifact@v4
-        with:
-          name: semgrep-results
-          path: |
-            semgrep-sast-results.json
-            semgrep-sca-results.json
+    - uses: actions/checkout@v4
+    - run: semgrep ci
