@@ -1,15 +1,16 @@
-# adding
-name: Semgrep
 on:
   workflow_dispatch: {}
   pull_request: {}
   push:
     branches:
-      - main
-      - master
+    - main
+    - master
+    paths:
+    - .github/workflows/semgrep.yml
   schedule:
-    - cron: '52 13 * * *'
-
+  # random HH:MM to avoid a load spike on GitHub Actions at 00:00
+  - cron: 52 13 * * *
+name: Semgrep
 jobs:
   semgrep:
     name: semgrep/ci
@@ -21,24 +22,5 @@ jobs:
     container:
       image: semgrep/semgrep
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Verify app.js exists
-        run: |
-          if [ ! -f app.js ]; then
-            echo "Error: app.js not found"
-            exit 1
-          fi
-          ls -l app.js
-      - name: Run Semgrep Scan
-        run: |
-          # Scans only app.js, excludes node_modules via .semgrepignore
-          semgrep ci --include app.js --json --output=semgrep-results.json
-          cat semgrep-results.json
-          # Fails workflow if any findings are detected, ensuring red X
-          jq -e '.results | length > 0' semgrep-results.json && { echo "Vulnerabilities found, failing workflow"; exit 1; }
-      - name: Upload Semgrep results
-        uses: actions/upload-artifact@v4
-        with:
-          name: semgrep-results
-          path: semgrep-results.json
+    - uses: actions/checkout@v4
+    - run: semgrep ci
