@@ -36,14 +36,13 @@ jobs:
         env:
           SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
         run: |
-          semgrep --config=r/javascript.express.security.xss.express-xss --config=r/javascript.express.security.insecure-cookie.insecure-cookie --config=r/javascript.express.security.cors.express-cors --config=r/javascript.nodejs.security.command-injection.command-injection --config=r/javascript.lang.security.eval.eval --config=r/javascript.nodejs.security.sql-injection.sql-injection app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose
+          semgrep --config=p/security app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error
           cat semgrep-sast-results.json
-          jq -e '.results | length > 0' semgrep-sast-results.json && { echo "Vulnerabilities found, failing workflow"; exit 1; }
       - name: Run Semgrep SCA
         env:
           SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
         run: |
-          semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose
+          semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose --error
           cat semgrep-sca-results.json
       - name: Upload Semgrep results
         uses: actions/upload-artifact@v4
