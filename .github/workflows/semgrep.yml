@@ -24,7 +24,7 @@ jobs:
       - name: Install Semgrep
         run: |
           pip install semgrep
-          semgrep --version
+          semgrep --version || echo "Warning: Failed to get Semgrep version"
       - name: Verify app.js exists
         run: |
           if [ ! -f app.js ]; then
@@ -35,18 +35,11 @@ jobs:
       - name: Run Semgrep SAST
         env:
           SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: |
-          semgrep --config=p/security app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error
-          if [ -s semgrep-sast-results.json ]; then
-            grep -q '"results":\s*\[.*\]' semgrep-sast-results.json && {
-              echo "Vulnerabilities found, failing workflow"
-              exit 1
-            }
-          fi
+        run: semgrep --config=auto app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error
       - name: Run Semgrep SCA
         env:
           SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose || exit 1
+        run: semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose --error
       - name: Upload Semgrep results
         uses: actions/upload-artifact@v4
         with:
