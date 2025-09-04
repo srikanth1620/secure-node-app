@@ -1,27 +1,45 @@
 name: Semgrep SAST and SCA Scan
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   semgrep-scan:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Install dependencies
         run: npm install
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
       - name: Install Semgrep
         run: pip install semgrep
+      - name: Verify app.js exists
+        run: |
+          if [ ! -f app.js ]; then
+            echo "Error: app.js not found"
+            exit 1
+          fi
+          ls -l app.js
+      - name: Verify Semgrep installation
+        run: |
+          semgrep --version || {
+            echo "Error: Semgrep not installed"
+            exit 1
+          }
       - name: Run Semgrep SAST
-        run: semgrep --config=auto --severity ERROR --json > semgrep-sast-results.json
+        run: semgrep --config=p/security app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || exit 1
       - name: Run Semgrep SCA
-        run: semgrep --config=p/supply-chain --json > semgrep-sca-results.json
+        run: semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose || exit 1
       - name: Upload Semgrep results
         uses: actions/upload-artifact@v4
         with:
