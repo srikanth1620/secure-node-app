@@ -31,8 +31,10 @@ jobs:
           ls -l app.js
       - name: Run Semgrep Scan
         run: |
+          # Scans only app.js, excludes node_modules via .semgrepignore
           semgrep ci --include app.js --json --output=semgrep-results.json
           cat semgrep-results.json
+          # Fails workflow if any findings are detected, ensuring red X
           jq -e '.results | length > 0' semgrep-results.json && { echo "Vulnerabilities found, failing workflow"; exit 1; }
       - name: Upload Semgrep results
         uses: actions/upload-artifact@v4
