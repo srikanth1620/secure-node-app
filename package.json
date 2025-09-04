@@ -1,8 +1,9 @@
 {
   "name": "secure-node-app",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -18,8 +19,8 @@
   "homepage": "https://github.com/srikanth1620/secure-node-app#readme",
   "dependencies": {
     "express": "^5.1.0",
-    "express-validator": "^7.2.1",
-    "helmet": "^8.1.0"
+    "helmet": "^8.1.0",
+    "express-validator": "^7.2.1"
   },
   "description": ""
 }
