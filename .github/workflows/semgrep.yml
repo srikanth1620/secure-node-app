@@ -35,13 +35,15 @@ jobs:
       - name: Run Semgrep SAST
         env:
           SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: semgrep --config=p/security app.js --severity ERROR --json > semgrep-sast-results.json --verbose --error
-      - name: Log SAST Results
-        run: cat semgrep-sast-results.json
+        run: |
+          semgrep --config=auto app.js --severity ERROR --json > semgrep-sast-results.json --verbose --error
+          cat semgrep-sast-results.json
       - name: Run Semgrep SCA
         env:
           SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: semgrep --config=p/supply-chain --json > semgrep-sca-results.json --verbose --error
+        run: |
+          semgrep --config=p/supply-chain --json > semgrep-sca-results.json --verbose --error
+          cat semgrep-sca-results.json
       - name: Upload Semgrep results
         uses: actions/upload-artifact@v4
         with:
