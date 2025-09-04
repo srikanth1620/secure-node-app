@@ -31,7 +31,7 @@ jobs:
           fi
           ls -l app.js
       - name: Run Semgrep SAST
-        run: semgrep --config=auto app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || exit 1
+        run: semgrep --config=auto app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || semgrep --config=p/xss app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || exit 1
       - name: Run Semgrep SCA
         run: semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose || exit 1
       - name: Upload Semgrep results
