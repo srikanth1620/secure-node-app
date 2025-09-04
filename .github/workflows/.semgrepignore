@@ -1,1 +1,0 @@
-node_modules/ dist/ build/ *.test.js *.spec.js
