@@ -22,11 +22,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install Semgrep
-        run: |
-          pip install semgrep==1.135.0 || {
-            echo "Error: Failed to install Semgrep"
-            exit 1
-          }
+        run: pip install semgrep==1.135.0
       - name: Verify app.js exists
         run: |
           if [ ! -f app.js ]; then
@@ -35,13 +31,9 @@ jobs:
           fi
           ls -l app.js
       - name: Run Semgrep SAST
-        env:
-          SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: python -m semgrep --config=auto app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || python -m semgrep --config=p/xss app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || exit 1
+        run: semgrep --config=auto app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || semgrep --config=p/xss app.js --severity ERROR --json --output=semgrep-sast-results.json --verbose --error || exit 1
       - name: Run Semgrep SCA
-        env:
-          SEMGREP_TOKEN: ${{ secrets.SEMGREP_TOKEN }}
-        run: python -m semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose || exit 1
+        run: semgrep --config=p/supply-chain --json --output=semgrep-sca-results.json --verbose || exit 1
       - name: Upload Semgrep results
         uses: actions/upload-artifact@v4
         with:
