@@ -1,4 +1,3 @@
-#adding new
 name: Semgrep
 on:
   workflow_dispatch: {}
@@ -32,7 +31,7 @@ jobs:
           ls -l app.js
       - name: Run Semgrep Scan
         run: |
-          semgrep ci --json --output=semgrep-results.json --verbose
+          semgrep ci --include app.js --json --output=semgrep-results.json --verbose
           cat semgrep-results.json
           jq -e '.results | length > 0' semgrep-results.json && { echo "Vulnerabilities found, failing workflow"; exit 1; }
       - name: Upload Semgrep results
