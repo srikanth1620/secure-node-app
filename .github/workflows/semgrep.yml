@@ -1,4 +1,4 @@
-#adding
+#adding new
 name: Semgrep
 on:
   workflow_dispatch: {}
