@@ -17,4 +17,4 @@ jobs:
         run: |
           echo "Pretending to run tests..."
           echo "All tests passed! 🎉"
-          exit 0   # Always succeed; change to exit 1 later to test failure
+          exit 0   # Always succeed; change to exit 1 later to test failuregi
