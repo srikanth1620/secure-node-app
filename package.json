@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/srikanth1620/secure-node-app#readme",
   "dependencies": {
+    "cors": "^2.8.6",
     "express": "^5.1.0",
+    "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
-    "express-validator": "^7.2.1"
+    "mysql": "^2.18.1"
   },
   "description": ""
 }
