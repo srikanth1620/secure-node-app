@@ -3,7 +3,7 @@ const helmet = require('helmet');
 const cors = require('cors');
 const mysql = require('mysql');
 const { query, validationResult } = require('express-validator');
-
+//
 // nosemgrep: express-check-csurf-middleware-usage (JSON API — CSRF not applicable)
 const app = express();
 const port = process.env.PORT || 3000;
