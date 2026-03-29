@@ -1,1 +1,9 @@
-adding something new
+Without semantic-release (what you have right now):
+
+You manually change the version in package.json (e.g. from 1.0.0 to 1.0.1 or 1.1.0).
+You push your code to GitHub.
+GitHub only sees normal commits.
+You usually end up with just one meaningful version label: v1.0.0 (if you created a tag manually).
+If you make more changes later, there is no automatic new version like 1.0.1 or 1.1.0.
+To go back, you have to remember which commit was "the stable 1.0.0 version" — it becomes messy over time.
+No automatic CHANGELOG.md.
