@@ -1,6 +1,7 @@
 {
   "name": "secure-node-app",
-  "version": "1.0.0",
+  "version": "1.0.4",
+  "private": true,
   "main": "app.js",
   "scripts": {
     "start": "node app.js",

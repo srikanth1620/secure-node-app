@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/srikanth1620/secure-node-app/compare/v1.0.3...v1.0.4) (2026-03-29)
+
+
+### Bug Fixes
+
+* update database connection timeout ([3b030ec](https://github.com/srikanth1620/secure-node-app/commit/3b030ec50e48cfed3f1f08340118318b3a164b90))
+
 ## [1.0.3](https://github.com/srikanth1620/secure-node-app/compare/v1.0.2...v1.0.3) (2026-03-29)
 
 
