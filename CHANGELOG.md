@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/srikanth1620/secure-node-app/compare/v1.0.1...v1.0.2) (2026-03-29)
+
+
+### Bug Fixes
+
+* fix typo in error message ([422bcaf](https://github.com/srikanth1620/secure-node-app/commit/422bcaf738586ed94a9230f6d60beff38b2e8e05))
+
 ## [1.0.1](https://github.com/srikanth1620/secure-node-app/compare/v1.0.0...v1.0.1) (2026-03-29)
 
 
