@@ -7,3 +7,60 @@ You usually end up with just one meaningful version label: v1.0.0 (if you create
 If you make more changes later, there is no automatic new version like 1.0.1 or 1.1.0.
 To go back, you have to remember which commit was "the stable 1.0.0 version" — it becomes messy over time.
 No automatic CHANGELOG.md.
+--------------------------------------------------------------------------
+
+1. Install the Required Packages
+Run this one-time command in your project root:
+Bashnpm install --save-dev \
+  semantic-release \
+  @semantic-release/commit-analyzer \
+  @semantic-release/release-notes-generator \
+  @semantic-release/changelog \
+  @semantic-release/npm \
+  @semantic-release/git
+2. Create the Configuration File
+Create a file called .releaserc.json in the root of your project with this exact content:
+JSON{
+  "branches": ["main"],
+  "ci": false,
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "@semantic-release/changelog",
+    "@semantic-release/npm",
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["package.json", "CHANGELOG.md"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ]
+  ]
+}
+3. Update package.json
+Add "private": true right after the "name" field (very important for apps):
+JSON{
+  "name": "secure-node-app",
+  "version": "1.0.0",          // you can start with any version
+  "private": true,
+  ...
+}
+4. First Release (Initial Setup)
+
+Make your first conventional commit:Bashgit commit --allow-empty -m "feat: initial setup"
+Run the release:Bashnpx semantic-release --no-ci
+
+This will:
+
+Create CHANGELOG.md
+Update package.json version
+Create Git tag (e.g. v1.0.0)
+
+5. Push Everything to GitHub
+Bashgit add .
+git commit -m "chore(release): update version and changelog"   # optional
+git push origin main --tags
+
+
+
+-----------------------------------------------------------------------
