@@ -1,43 +1,27 @@
-# ====================== Build Stage ======================
-FROM node:18-alpine AS builder
-
-WORKDIR /app
-
-# Copy package files and install dependencies
-COPY package*.json ./
-RUN npm ci
-
-# Copy source code
-COPY . .
-
-# Run build only if the script exists (safe)
-RUN npm run build --if-present
-
-# ====================== Production Stage ======================
+# Use Node 18 Alpine (lightweight)
 FROM node:18-alpine
 
 WORKDIR /app
 
-# Copy package files and production dependencies
-COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+# Copy package files first
+COPY package*.json ./
 
-# Copy the built application - Try these common folders one by one
-# Option A: dist (most common for TypeScript, Vite, Webpack)
-# COPY --from=builder /app/dist ./dist
+# Install dependencies (including dev if needed for build)
+RUN npm ci
 
-# Option B: build (common for Create React App, some setups)
-COPY --from=builder /app/build ./build
+# Copy the rest of your application code
+COPY . .
 
-# Option C: If your app has no build step (plain Express/Fastify), copy everything
-# COPY --from=builder /app ./
+# Run build if it exists (safe command)
+RUN npm run build --if-present
 
 # Security: run as non-root user
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S -u 1001 -G nodejs nodeuser
 USER nodeuser
 
+# Azure App Service expects the app to listen on this port by default
 EXPOSE 8080
 
-# Start the app using your package.json "start" script
+# Start the application using your "start" script from package.json
 CMD ["npm", "start"]
