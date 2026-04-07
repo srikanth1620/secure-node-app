@@ -6,7 +6,6 @@ on:
       - main
   workflow_dispatch: {}
 
-# No id-token permission - we are using client secret
 permissions:
   contents: read
 
@@ -33,13 +32,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to Azure using Client Secret
+      # Login using creds (JSON) - Most reliable for client secret
+      - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_868CDA1925B9444091C67DED9736EEFE }}
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}","subscriptionId":"${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_868CDA1925B9444091C67DED9736EEFE }}"}'
 
       - name: Log in to Azure Container Registry
         uses: azure/docker-login@v2
