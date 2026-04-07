@@ -1,5 +1,4 @@
 name: Build and Deploy Node.js App to Azure Web App
-
 on:
   push:
     branches:
@@ -8,22 +7,19 @@ on:
 
 jobs:
   semgrep:
-    name: semgrep/community-edition
+    name: semgrep/ci
     runs-on: ubuntu-latest
     permissions:
       contents: read
+    env:
+      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
     container:
       image: semgrep/semgrep
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Run Semgrep Scan (Community Edition)
-        run: |
-          semgrep scan \
-            --config=auto \
-            --config=p/secrets \
-            --error
+      - name: Run Semgrep Scan
+        run: semgrep ci
 
   build:
     name: build
