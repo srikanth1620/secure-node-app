@@ -6,8 +6,10 @@ on:
       - main
   workflow_dispatch: {}
 
+# ←←← THIS IS THE MOST IMPORTANT PART ←←←
 permissions:
   contents: read
+  id-token: write     # Required for Azure OIDC login
 
 jobs:
   semgrep:
@@ -27,12 +29,19 @@ jobs:
     needs: semgrep
     if: always() && needs.semgrep.result == 'success'
     runs-on: ubuntu-latest
+    # No need to repeat permissions here if set at workflow level
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 1. Login to ACR using Admin User (this part works)
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2C34E57C1C224509ABA03A55CEBFE2F9 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E908A152458348C3B2528C8B384DC577 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_868CDA1925B9444091C67DED9736EEFE }}
+
       - name: Log in to Azure Container Registry
         uses: docker/login-action@v3
         with:
@@ -40,7 +49,6 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
 
-      # 2. Build and push the image
       - name: Build and push Docker image to ACR
         uses: docker/build-push-action@v6
         with:
@@ -50,15 +58,6 @@ jobs:
             securenodeacr.azurecr.io/secure-node-app:${{ github.sha }}
             securenodeacr.azurecr.io/secure-node-app:latest
 
-      # 3. Login to Azure (required for webapps-deploy)
-      - name: Login to Azure
-        uses: azure/login@v2
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2C34E57C1C224509ABA03A55CEBFE2F9 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E908A152458348C3B2528C8B384DC577 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_868CDA1925B9444091C67DED9736EEFE }}
-
-      # 4. Deploy the container to App Service
       - name: Deploy container to Azure App Service
         uses: azure/webapps-deploy@v3
         with:
