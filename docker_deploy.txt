@@ -1,0 +1,22 @@
+
+current 
+
+Login to Azure
+Service Principal (using OIDC with your original AZUREAPPSERVICE_CLIENTID_... secrets)
+
+Login to ACR
+GitHub Actions authenticates to push images
+ACR Admin User (ACR_USERNAME + ACR_PASSWORD)
+
+Updates App Service to use the new image
+Service Principal (same as step 2)
+
+App Service pulls the image from ACR at runtime
+Managed Identity (System-assigned) + AcrPull role
+
+Here’s what a clean, secure setup should look like:
+
+GitHub Actions → Azure Login → Service Principal (OIDC) ← You are already doing this correctly.
+GitHub Actions → Push to ACR → Same Service Principal with AcrPush role ← This needs to be improved.
+App Service → Pull from ACR → Managed Identity with AcrPull role ← You are already doing this correctly.
+
