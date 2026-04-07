@@ -6,7 +6,7 @@ on:
       - main
   workflow_dispatch: {}
 
-# No id-token permission needed when using client-secret
+# No id-token permission - we are using client secret
 permissions:
   contents: read
 
@@ -33,8 +33,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Login using Client Secret (this is the reliable method right now)
-      - name: Login to Azure
+      - name: Login to Azure using Client Secret
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
