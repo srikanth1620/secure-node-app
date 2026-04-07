@@ -1,3 +1,4 @@
+// this is for semantic release 
 {
     "branches": ["main"],
     "ci": false,
