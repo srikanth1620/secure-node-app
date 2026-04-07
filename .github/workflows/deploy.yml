@@ -39,11 +39,11 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_E908A152458348C3B2528C8B384DC577 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_868CDA1925B9444091C67DED9736EEFE }}
 
-      # Improved ACR Login - More reliable than "az acr login"
+      # Correct ACR Login Action
       - name: Log in to Azure Container Registry
-        uses: azure/acr-login@v2
+        uses: azure/docker-login@v2
         with:
-          registry: securenodeacr.azurecr.io
+          login-server: securenodeacr.azurecr.io
 
       - name: Build and push Docker image to ACR
         uses: docker/build-push-action@v6
