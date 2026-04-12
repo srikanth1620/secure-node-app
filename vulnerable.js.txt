@@ -1,4 +1,4 @@
-// vulnerable.js - Simple example that Semgrep Community Edition WILL find
+// vulnerable.js 
 
 const express = require('express');
 const app = express();
